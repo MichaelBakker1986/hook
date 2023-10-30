@@ -1,0 +1,19 @@
+name: Deploy to Strato
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to Strato
+        run: |
+          scp -o StrictHostKeyChecking=no -r %GITHUB_WORKSPACE%\* 524094584.swh.strato-hosting.eu@ssh.strato.com:/
+          echo done
+        shell: cmd
+
