@@ -7,13 +7,24 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
 
-      - name: Deploy to Strato
-        run: |
-          scp -o StrictHostKeyChecking=no -r %GITHUB_WORKSPACE%\* 524094584.swh.strato-hosting.eu@ssh.strato.com:/
-          echo done
-        shell: cmd
+      - name: SFTP Deploy
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.1
+        with:
+          username: 524094584.swh.strato-hosting.eu
+          server: ssh.strato.com
+          port: 22 # default is 22
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+
+          # will put all file under this path
+          local_path: ./* # default is ./*
+          # files will copy to under remote_path
+          remote_path: /
+
+          # sftp args
+          args: '-o ConnectTimeout=5'
